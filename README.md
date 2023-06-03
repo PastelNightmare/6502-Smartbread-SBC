@@ -45,7 +45,7 @@ SimTerm (Simple Terminal) sends ASCII data from the keyboard to the ACIA. Local 
 A simple VGM player to play VGM files for the SN76489 sound chip. Expects raw VGM hex at 8900 (0900 if you're burning to ROM). Could easily be changed to load hex out of RAM instead with one line of code. 
 
 ## Enhanced 6502 BASIC 2.22 (EhBASIC) port
-Made by Lee Davison, information: http://retro.hansotten.nl/6502-sbc/lee-davison-web-site/enhanced-6502-basic/. Ported to SmartBread by me. 
+Made by Lee Davison, information: http://retro.hansotten.nl/6502-sbc/lee-davison-web-site/enhanced-6502-basic/. Ported to SmartBread by me. ** COMPILING NOTE: ** in order to compile EhBASIC, point the include line at the beginning of the Minimal Monitor to where you've downloaded EHBASIC.ASM. Minimal monitor starts at A000 and should be used to cold start BASIC! 
 
 ## To-do list / Wishlist 
 - Improve code by removing useless structures / subroutines
