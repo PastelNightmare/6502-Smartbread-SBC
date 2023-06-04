@@ -31,7 +31,7 @@ All commands are processed by pressing enter. Accepts input from onboard PS2 key
 
 
 | Command | Example | Description |         
-| ------------- | ------------- | ------------- |
+| --------------- | --------------- | --------------- |
 | Read  | 4000  | Displays data at address 0x4000  |
 | List | L 2000.20FF | Will display all data between addresses 0x2000 and 0x20FF |
 | Write  | W 2000 FF | Writes 0xFF at address 0x2000  |
