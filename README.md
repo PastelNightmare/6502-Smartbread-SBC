@@ -33,7 +33,7 @@ All commands are processed by pressing enter. Accepts input from onboard PS2 key
 | Command | Example | Description |         
 | --------------- | --------------- | --------------- |
 | Read  | 4000  | Displays data at address 0x4000  |
-| List | L 2000.20FF | Will display all data between addresses 0x2000 and 0x20FF |
+| List |L 2000.20FF| Will display all data between addresses 0x2000 and 0x20FF |
 | Write  | W 2000 FF | Writes 0xFF at address 0x2000  |
 | Write next | 00 | Data byte preceded with a space will write data to next location. MUST USE WRITE COMMAND FIRST |
 | Run | R 2000 | Runs code starting at address 2000 | 
