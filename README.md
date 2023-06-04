@@ -8,7 +8,7 @@ Software assumes you are using the Kowalski 6502 simulator for assmebly. https:/
 # Disclaimer: 
 This was my first stab at assembly of any kind. While the code does exactly what I want it to do for this system, I understand that my code is not pretty by any stretch, and there is tons of room for improvement. I'm a novice, so please go easy on me. Some things like address decoding were figured out with the help of the 6502 forum and the 6502 Primer by Garth Wilson. Found at: http://wilsonminesco.com/
 
-# Specs / Parts list:
+# Specs
 - 65C02 processor running at 2mhz
 - 2x 65C22 VIA (versatile interface adapter) chips
 - 1x 65C51 ACIA (UART) chip
@@ -22,6 +22,25 @@ This was my first stab at assembly of any kind. While the code does exactly what
 - PS2 keyboard input
 - RCA output for sound. 
 - Displays to charcter LCD or serial using any terminal device (board has a slot for the BatSocks tellymate tiny for this purpose http://www.batsocks.co.uk/products/Other/TellyMate%20Tiny.htm)
+
+# Parts list
+- R1-R6: 3.3k through hole resistor
+- R7, R8: 10k through hole resistor
+- R9: 370 ohm resistor. 
+- C1: 1uf electrolytic capacitor. 
+- All other capacitors: 100nf filter. Ceramic disc.
+- 6502CLCK: ECS-100AX-018 oscillator, 2MHz
+- SNCLCK: ECS-100AX-018 oscillator, 4MHz
+- SERCLCK: ECS-100AX-018 oscillator, 1.8432MHz
+- 65C02 processor
+- VIA1, VIA2: 65C22 VIA chips (keyboard doesn't work right with non-CMOS versions)
+- ACIA: 65C51 ACIA chip
+- ROM: AT28C256
+- RAM: Alliance AS6C62256
+- ADDR: CD74HCT132E
+- SN: Texas Instruments: SN76489
+- ATTINY26: Atmel ATTINY26
+- POWER: 5v through header, or surface mount USB Mini B jack. 
 
 # Included Software
 ## DeMon 4.0
@@ -46,7 +65,15 @@ A simple VGM player to play VGM files for the SN76489 sound chip. Expects raw VG
 ## Enhanced 6502 BASIC 2.22 (EhBASIC) port
 Made by Lee Davison, information: http://retro.hansotten.nl/6502-sbc/lee-davison-web-site/enhanced-6502-basic/. Ported to SmartBread by me. **COMPILING NOTE:** in order to compile EhBASIC, point the include line at the beginning of the Minimal Monitor to where you've downloaded EHBASIC.ASM. Minimal monitor starts at A000 and should be used to cold start BASIC! 
 
-## To-do list / Wishlist 
+# Port Description
+- GPIO - 8 bit parallel GPIO port. Can attach LCD to this port to work natively with DeMon, but it isn't required and can be used for whatever else the end user desires. The current board DOES NOT have the LCD enable line on this port, but it will be added to a future revision. 
+- TM - Tellymate Tiny can be connected here for composite display. The part is discontinued, but eagle files and firmware exist on the Batsocks website. 
+- Serial - Gives control lines for the ACIA ports, along with GNDs next to each one. Allows these status lines to be jumpered to ground, which **should** be done for most operations. (DTR, RTS, CTS, DCD) Also provides 5v and GND for user. 
+- CLKMODE - Shorting these two pins with solder or a jumper allows the serial clock to also run the processor clock. This saves one part, but makes the CPU run slightly slower. 
+
+
+# To-do list / Wishlist 
+- Update display to a new, non-discontinued solution. For now, Tellymate Tiny could be used, or provided serial breakout can be attached to something like the ASCII video terminal. https://geoffg.net/terminal.html
 - Improve code by removing useless structures / subroutines
 - Adding a binary load command to DeMon load binary data directly into memory from serial port. 
 - Either standalone or built-in assembly evnironment for DeMon. 
