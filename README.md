@@ -38,10 +38,7 @@ All commands are processed by pressing enter. Accepts input from onboard PS2 key
 | Write next | 00 | Data byte preceded with a space will write data to next location. MUST USE WRITE COMMAND FIRST |
 | Run | R 2000 | Runs code starting at address 2000 | 
 | Clear | CL | Clears all displays |
-| Sound | S FF | Sends 0xFF to sound chip and makes the chip process it |
-
-## SimTerm 1.0 
-SimTerm (Simple Terminal) sends ASCII data from the keyboard to the ACIA. Local echo on modem MUST be turned off for this otherwise it doubles everything you type. 
+| Sound | S FF | Sends 0xFF to sound chip and makes the chip process it | 
 
 ## VGM player
 A simple VGM player to play VGM files for the SN76489 sound chip. Expects raw VGM hex at 8900 (0900 if you're burning to ROM). Could easily be changed to load hex out of RAM instead with one line of code. 
@@ -56,3 +53,5 @@ Made by Lee Davison, information: http://retro.hansotten.nl/6502-sbc/lee-davison
 - Text editor prorgram
 - SPI protocol for various peripherals. 
 - Cassette interface. 
+- Rewrite my old code. The VGM player is old and hard to read. This was before I knew much about anything coding wise. 
+- Write a terminal emulator program. I did make SimTerm originally, but it is hot garbage. 
