@@ -3,6 +3,8 @@ Its name came from a friend who called it this when they saw my initial prototyp
 
 Repo includes software, PCB gerber files and resources. ROM included has SIMterm and BASIC. Other files can be added and recompiled as desired 
 
+Software assumes you are using the Kowalski 6502 simulator for assmebly. https://sbc.rictor.org/kowalski.html 
+
 # Disclaimer: 
 This was my first stab at assembly of any kind. While the code does exactly what I want it to do for this system, I understand that my code is not pretty by any stretch, and there is tons of room for improvement. I'm a novice, so please go easy on me. Some things like address decoding were figured out with the help of the 6502 forum and the 6502 Primer by Garth Wilson. Found at: http://wilsonminesco.com/
 
