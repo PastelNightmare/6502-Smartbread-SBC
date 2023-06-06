@@ -68,12 +68,12 @@ Made by Lee Davison, information: http://retro.hansotten.nl/6502-sbc/lee-davison
 # Port Description
 - GPIO - 8 bit parallel GPIO port. Can attach LCD to this port to work natively with DeMon, but it isn't required and can be used for whatever else the end user desires. The current board DOES NOT have the LCD enable line on this port, but it will be added to a future revision. 
 - TM - Tellymate Tiny can be connected here for composite display. The part is discontinued, but eagle files and firmware exist on the Batsocks website. 
-- Serial - Gives control lines for the ACIA ports, along with GNDs next to each one. Allows these status lines to be jumpered to ground, which **should** be done for most operations. (DTR, RTS, CTS, DCD) Also provides 5v and GND for user. 
+- Serial - Gives control lines for the ACIA ports, along with GNDs next to each one. Allows these status lines to be jumpered to ground, which **should** be done for most operations. (DTR, RTS, CTS, DCD) Also provides 5v and GND for user. Can connect to a TTL to RS232 converter for any type of serial display. 
 - CLKMODE - Shorting these two pins with solder or a jumper allows the serial clock to also run the processor clock. This saves one part, but makes the CPU run slightly slower. 
 
 
 # To-do list / Wishlist 
-- Update display to a new, non-discontinued solution. For now, Tellymate Tiny could be used, or provided serial breakout can be attached to something like the ASCII video terminal. https://geoffg.net/terminal.html
+- Update display to a new, non-discontinued solution. For now, Tellymate Tiny could be used, or provided serial pins can be attached to any device with a TTL to RS232 converter (Max232 and the like): Breakout USB boards, Converted RS232 port to a real glass terminal, etc. 
 - Improve code by removing useless structures / subroutines
 - Adding a binary load command to DeMon load binary data directly into memory from serial port. 
 - Either standalone or built-in assembly evnironment for DeMon. 
