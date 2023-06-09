@@ -1,7 +1,7 @@
 # SmartBread: A 6502 based single-board computer 
 Its name came from a friend who called it this when they saw my initial prototypes on a breadboard. MintSpark Electronics was the working "maker name" for my projects, though it may not be for long. Other than another 6502 based single board computer, of which many exist, this was many firsts for me. Starting in 2017, I had a goal to build a 6502 system on a breadboard. As it grew, it became my first real endeavour into 6502 assembly, coding for an actual system, trying to make user friendly software, and PCB making. I now have working PCBs, a few programs, and much more work to do. 
 
-Repo includes software, PCB gerber files and resources. ROM included has SIMterm and BASIC. Other files can be added and recompiled as desired 
+Repo includes software, PCB gerber files and resources. ROM included has DeMon 4.0 and EhBASIC w/ its cold start monitor. Other files can be added and recompiled as desired 
 
 Software assumes you are using the Kowalski 6502 simulator for assmebly. https://sbc.rictor.org/kowalski.html 
 
