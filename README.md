@@ -75,9 +75,9 @@ Made by Lee Davison, information: http://retro.hansotten.nl/6502-sbc/lee-davison
 - CLKMODE - Shorting these two pins with solder or a jumper allows the serial clock to also run the processor clock. This saves one part, but makes the CPU run slightly slower. 
 
 # Using a WDC 65C02
-In order to use a WDC version of the processor in the current revision, there is a slight modification to the board that must be made. Pin 39 (PHI2O) on the chip must be lifted out of the socket or removed. Then on the underside of the board, you must bridge a connection between Pin 39 and Pin 37. 
+In order to use a WDC version of the processor in the current revision, there is a slight modification to the board that must be made. Pin 39 (PHI2O) on the chip must be lifted out of the socket or removed. Then on the underside of the board, you must bridge a connection between Pin 39 and Pin 37 of the CPU socket. 
 
-Traditionally, you provide the clock frequency to the CPU via PHI0/PHI2 input, then drive the rest of peripherals from PHI2O output from the CPU. The board was made with this in mind. WDC chips, however, do not test or guarantee the usability of the PHI2O output. They reccomend that everything onboard receives its clock from the main oscillator driving the CPU. By bridging these two points on the board and lifting pin 39 from the chip, you are routing the clock in this manner. Future board revisions will have this as a jumper to ensure compatiblity. 
+Traditionally, you provide the clock frequency to the CPU via PHI0/PHI2 input, then drive the rest of peripherals from PHI2O output from the CPU. The board was made with this in mind. WDC chips, however, do not test or guarantee the usability of the PHI2O output. They recommend that everything onboard receives its clock from the main oscillator driving the CPU. By bridging these two points on the board and lifting pin 39 from the chip, you are routing the clock in this manner. Future board revisions will have this as a jumper to ensure compatiblity. 
 
 # To-do list / Wishlist 
 - Update display to a new, non-discontinued solution. For now, Tellymate Tiny could be used, or provided serial pins can be attached to any device with a TTL to RS232 converter (Max232 and the like): Breakout USB boards, Converted RS232 port to a real glass terminal, etc. 
