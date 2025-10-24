@@ -1,3 +1,6 @@
+# IMPORTANT DESIGN NOTE
+Due to a design difference with the WDC version of the 65C02 processor, this board will not work with WDC chips without a small modification. See "Using a WDC 65C02" below.
+
 # SmartBread: A 6502 based single-board computer 
 Its name came from a friend who called it this when they saw my initial prototypes on a breadboard. MintSpark Electronics was the working "maker name" for my projects, though it may not be for long. Other than another 6502 based single board computer, of which many exist, this was many firsts for me. Starting in 2017, I had a goal to build a 6502 system on a breadboard. As it grew, it became my first real endeavour into 6502 assembly, coding for an actual system, trying to make user friendly software, and PCB making. I now have working PCBs, a few programs, and much more work to do. 
 
@@ -71,6 +74,10 @@ Made by Lee Davison, information: http://retro.hansotten.nl/6502-sbc/lee-davison
 - Serial - Gives control lines for the ACIA ports, along with GNDs next to each one. Allows these status lines to be jumpered to ground, which **should** be done for most operations. (DTR, RTS, CTS, DCD) Also provides 5v and GND for user. Can connect to a TTL to RS232 converter for any type of serial display. 
 - CLKMODE - Shorting these two pins with solder or a jumper allows the serial clock to also run the processor clock. This saves one part, but makes the CPU run slightly slower. 
 
+# Using a WDC 65C02
+In order to use a WDC version of the processor in the current revision, there is a slight modification to the board that must be made. Pin 39 (PHI2O) on the chip must be lifted out of the socket or removed. Then on the underside of the board, you must bridge a connection between Pin 39 and Pin 37. 
+
+Traditionally, you provide the clock frequency to the CPU via PHI0/PHI2 input, then drive the rest of peripherals from PHI2O output from the CPU. The board was made with this in mind. WDC chips, however, do not test or guarantee the usability of the PHI2O output. They reccomend that everything onboard receives its clock from the main oscillator driving the CPU. By bridging these two points on the board and lifting pin 39 from the chip, you are routing the clock in this manner. Future board revisions will have this as a jumper to ensure compatiblity. 
 
 # To-do list / Wishlist 
 - Update display to a new, non-discontinued solution. For now, Tellymate Tiny could be used, or provided serial pins can be attached to any device with a TTL to RS232 converter (Max232 and the like): Breakout USB boards, Converted RS232 port to a real glass terminal, etc. 
