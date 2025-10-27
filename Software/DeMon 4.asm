@@ -1,9 +1,10 @@
-; Pastel Nightmares / MintSpark Electronics 2024
-; DeMon (DEvice MONitor) OS for Smartbread 6502 SBC
-; This was my first big coding project and I learned along the way. 
-; So this isn't perfect, and I'm sure there are tons of ways to further optimize the code. 
+; Device Monitor 2025 Dev Build
+; Starting to refactor and fix jank
+; Add conditional blocks to save space. If you're only using a serial port, you can disable LCD and Tellymate Tiny specifc code
 
 
+LCDCONNECTED = 0 					; Set to 1 to tell assembler you're using LCD 
+TMCONNECTED = 0 					; Set to 1 to tell assembler you're using tellymate tiny 
 
 ;Setting registers
 
@@ -24,7 +25,6 @@ ACIA_COMMAND = $4402
 ACIA_CONTROL = $4403
 
 DROPCOUNT = $0050
-
  
  *=$0020 ; Zero page variables 
  
@@ -37,8 +37,6 @@ WRITEV:  .DS $2 					; Data value converted FROM Ascii to Hex. Used for write co
  
 BUFFER: .RS $50
 
- 
- 
 ; ROM starts here. 
  
  *=$8000 
@@ -50,78 +48,82 @@ INITST:
 	
 	LDX #$FF					
         TXS 						; Stack initialized
-							;UART Initialized
+							; UART Initialized
 UINIT:   
-	 LDA #@00001011					;No parity, no echo, no interrupt
+	 LDA #@00001011					; No parity, no echo, no interrupt
          STA ACIA_COMMAND
-         LDA #@00011111					;19200 8N1 connection
+         LDA #@00011111					; 19200 8N1 connection
          STA ACIA_CONTROL
             
+
+
 INITDDR: 
          LDA #$FF
-         STA VIADDRA 					; VIA 1 Data Direction Register (DDR) A, all output. Character LCD data lines.	
+         STA VIADDRA 					; VIA 1 Data Direction Register (DDR) A, all output. Character LCD data line / GPIO. Can rewrite as needed via DeMon	
          STA VI2DDRB 					; Via 1 DDR B all output. Sound chip data lines. 
          LDA #$00
          STA VI2DDRA 					; Via 2 DDRA all input. ASCII data from keyboard chip. 
          LDA #@11110111
          STA VIADDRB  					; Control signals, all output for LCD, sound chip. One input for keyboard handshaking. 
-         
-FLASHC: 						; LCD Initialization
+   
+   .IF LCDCONNECTED       
+	FLASHC: 						; LCD Initialization
         
-         LDA #@00000110					; LCD Command Register, leaving enable line high. 
-         STA VIAORB 
-         LDA #$0F 
-         STA VIAORA 					; Turns on character LCD with blinking cursor
-         LDA #@00000100
-         STA VIAORB 
-         JSR DELAY					; Strobes enable line to tell LCD to process data, and delays to allow LCD to process command. 
+ 	        LDA #@00000110					; LCD Command Register, leaving enable line high. 
+        	STA VIAORB 
+         	LDA #$0F 
+         	STA VIAORA 					; Turns on character LCD with blinking cursor
+         	LDA #@00000100
+         	STA VIAORB 
+         	JSR DELAY					; Strobes enable line to tell LCD to process data, and delays to allow LCD to process command. 
 	
-TWOLINE: 
+	TWOLINE: 
 
-         LDA #@00000110 
-         STA VIAORB
-         LDA #@00111100
-         STA VIAORA 					; LCD using 8 data bits, 5x10 font, 2 lines. 
-         LDA #@00000100 
-         STA VIAORB
-         JSR DELAY					; Enable line strobe
+         	LDA #@00000110 
+         	STA VIAORB
+         	LDA #@00111100
+         	STA VIAORA 					; LCD using 8 data bits, 5x10 font, 2 lines. 
+         	LDA #@00000100 
+         	STA VIAORB
+         	JSR DELAY					; Enable line strobe
          
-CLEAR: 
-         LDA #@00000110 
-         STA VIAORB
-         LDA #$01 					; Clear LCD
-         STA VIAORA
-         LDA #@00000100 
-         STA VIAORB
-         JSR DELAY					; Enable line strobe
-         LDA #@00000111
-         STA VIAORB					; Set VIA output register B to what it will need for the rest of monitor when not being used
-       
+	CLEAR: 
+        	LDA #@00000110 
+         	STA VIAORB
+         	LDA #$01 					; Clear LCD
+         	STA VIAORA
+         	LDA #@00000100 
+         	STA VIAORB
+         	JSR DELAY					; Enable line strobe
+         	LDA #@00000111
+         	STA VIAORB					; Set VIA output register B to what it will need for the rest of monitor when not being used
+ 	.endif
 
-TELLYMATEINIT:						; Tellymate tiny (composite display terminal connected to ACIA) needs two dummy bits to initiate autobaud per manufacturer's spec. 
+						; Tellymate tiny (composite display terminal connected to ACIA) needs two dummy bits to initiate autobaud per manufacturer's spec. 
 							; ASCII U (01010101) is recommended. Also sends commands to turn on autowrap, and clear the screen before printing splash message.
 							; Per WDC instructions, new ACIA chips have a bug which breaks the TXE flag. You cannot check that to ensure data register is empty. 
 							; Manufacturer recommends a delay after each bit data sent to it to ensure data register is ready for more data. So every serial 
-							; related operation will have a delay as a result. First here, and then in the ECHO subroutine.   
+    .if TMCONNECTED 					; related operation will have a delay as a result. First here, and then in the ECHO subroutine.   
                
-        LDA #@01010101 
-        STA ACIA_DATA 
-        JSR DELAY					
-        STA ACIA_DATA 
-        JSR DELAY 					; Stores U on the ACIA data register twice
-        LDA #$1B 
-        STA ACIA_DATA
-        JSR DELAY
-        LDA #$76 					; Tellymate tiny commands are initiaed with ESC in ASCII and then another ASCII character to do a command. 76, autowrap on. 
-        STA ACIA_DATA
-        JSR DELAY
-        LDA #$1B
-        STA ACIA_DATA
-        JSR DELAY 
-        LDA #$45 					; 45. Clear screen
-        STA ACIA_DATA
-        JSR DELAY
-      
+	TELLYMATEINIT:
+        	LDA #@01010101 
+        	STA ACIA_DATA 
+        	JSR DELAY					
+        	STA ACIA_DATA 
+        	JSR DELAY 					; Stores U on the ACIA data register twice
+        	LDA #$1B 
+        	STA ACIA_DATA
+        	JSR DELAY
+        	LDA #$76 					; Tellymate tiny commands are initiaed with ESC in ASCII and then another ASCII character to do a command. 76, autowrap on. 
+        	STA ACIA_DATA
+        	JSR DELAY
+        	LDA #$1B
+        	STA ACIA_DATA
+        	JSR DELAY 
+        	LDA #$45 					; 45. Clear screen
+        	STA ACIA_DATA
+        	JSR DELAY
+  .endif  
        
                                    
 MSGST: ; Mostly initalized. Let's make a splash message! 
@@ -136,7 +138,7 @@ GET:    LDA TEXT,Y 					; Loads character of text, indexed by Y.
         JMP GET 					; Moves the index to the next location, and loops to continue. 
         
         
-TEXT: .BYTE "DeMon Revision 4.0" , $0D , $0D , "MintSpark 2023" , $0D , $0D , "READY" , $00
+TEXT: .BYTE "DeMon 4.1", $0A , $0D , $0A , $0D , "READY" , $0A, $0D, $0A, $0D, ">", $00
          
 
 ; Silences all channels of sound chip, sets tone data, and turns beep on and off. 
@@ -159,7 +161,7 @@ SILENCE: 	 					; VI2ORB is connected to sound chip data lines. PULSE strobes th
         STA VI2ORB 				
         JSR PULSE 
 
-BEEP:		
+BEEP:		        
 	LDA #@10001110
         STA VI2ORB
         JSR PULSE
@@ -184,7 +186,8 @@ BEEP:
 
 PREP: ; 						; Y register is our index into the buffer
 
-        LDY #$00 					
+        LDY #$00 
+											
 
 SCAN: 							; Loop to scan keyboard or serial port for a keypress
 
@@ -610,13 +613,19 @@ ECHO: ; Places accumulator on both the via LCD display, and serial displays
         STA VIAORA  
         STA ACIA_DATA  
         JSR DELAY 					; Delays needed here for both LCD and 6551 from WFDC
-        LDA #@00000111
-        STA VIAORB
-        LDA #@00000101
-        STA VIAORB
-        JSR DELAY
-        LDA #@0000111 					; Pulses LCD write enable. Could rewrite to subroutine, but I hadn't figured that out yet. 
-        STA VIAORB
+	
+	.IF LCDCONNECTED 
+	
+  		LDA #@00000111
+        	STA VIAORB
+        	LDA #@00000101
+        	STA VIAORB
+        	JSR DELAY
+        	LDA #@0000111 				; Pulses LCD write enable. Could rewrite to subroutine, but I hadn't figured that out yet. 
+        	STA VIAORB
+	
+	.ENDIF 
+	
         RTS
 
 PROMPT: ; Subroutine to print prompt character. 
@@ -648,16 +657,20 @@ INIT2:  STZ WRITEV    ; Used to blank out the WriteV buffer. I don't remember wh
      
 DROPLINE: ; Drops displays down one line. 
 
-        LDA #@00000110 					; Puts LCD in command mode. 
-        STA VIAORB
-        LDA #$A8 					; Start screen address at 40. One line down from top. 
-        STA VIAORA
-        LDA #@00000100 					; Strobe enable line, keeping register select low. 
-        STA VIAORB
-        JSR DELAY
-        JSR DELAY
-        LDA #@00000111 					; LCD data mode
-        STA VIAORB
+        .if LCDCONNECTED
+        	
+        	LDA #@00000110 					; Puts LCD in command mode. 
+        	STA VIAORB
+        	LDA #$A8 					; Start screen address at 40. One line down from top. 
+        	STA VIAORA
+        	LDA #@00000100 					; Strobe enable line, keeping register select low. 
+        	STA VIAORB
+        	JSR DELAY
+        	JSR DELAY
+        	LDA #@00000111 					; LCD data mode
+        	STA VIAORB
+        .endif 
+        
         LDA #$0A
         STA ACIA_DATA
         JSR DELAY
