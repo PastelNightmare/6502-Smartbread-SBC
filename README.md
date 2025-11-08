@@ -1,3 +1,22 @@
+# Archiving, for now! I don't recommend using V1 of the board as of now.
+As I play around with the finished PCB, I realized there are a few issues with it. 
+- A13 is not connected to the RAM chip, so you have to make a jumper to it from elsewhere. 
+- The below mentioned difference in clock generation from other processors to the WDC version.
+- I'm using the WDC 65C22S, which does NOT have an open-drain interrupt output! It has a totem pole ouput! Right now, it's currently wired as if it were open drain, which is fine as long as you **don't use interrupts.** If you do though, you will short circuit the IRQ lines of the VIA.
+
+# Upcoming hardware changes? 
+- Reconnect A13, obviously.
+- Make the system clock with WDC parts in mind
+- Add schottky diodes on the VIA interrupts to connect them with the other open drain interrupts. Fine at 2mhz clock speed.
+- Change address decoding to use Daryl Rictors DEC-1. https://sbc.rictor.org/decoder.html
+
+# Upcoming software changes? 
+- A customized version of EHBasic, which I've already made. Includes commands for sound, clearing screen, and returning to the monitor.
+- Updating VGM player to load VGM out of RAM instead of ROM, and commented to explain better what it is doing. 
+- Porting WozMon to this board for easier data entry. DeMon is fine, but it was more a project for me anyway. 
+- A better terminal emulator program
+- Eventually, using the new interrupts to allow streaming of VGM from the serial port. But that is a long time off. 
+
 # IMPORTANT DESIGN NOTE
 Due to a design difference with the WDC version of the 65C02 processor, this board will not work with WDC chips without a small modification. See "Using a WDC 65C02" below.
 
